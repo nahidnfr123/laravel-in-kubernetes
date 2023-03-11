@@ -27,7 +27,7 @@ COPY . /var/www/html
 RUN composer install --no-dev --optimize-autoloader
 
 # Copy Nginx configuration file
-COPY docker/nginx.conf /etc/nginx/nginx.conf
+COPY nginx/conf.d /etc/nginx/conf.d
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html \
