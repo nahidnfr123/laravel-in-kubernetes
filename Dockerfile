@@ -3,7 +3,6 @@ FROM php:8.1-fpm-alpine
 # Install necessary packages
 RUN apk update && apk add --no-cache \
     nginx \
-    supervisor \
     curl \
     libpng-dev \
     libzip-dev \
@@ -29,9 +28,6 @@ RUN composer install --no-dev --optimize-autoloader
 # Copy Nginx configuration file
 COPY docker/nginx.conf /etc/nginx/nginx.conf
 
-# Copy Supervisor configuration file
-COPY docker/supervisord.conf /etc/supervisord.conf
-
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/storage
@@ -39,5 +35,5 @@ RUN chown -R www-data:www-data /var/www/html \
 # Expose ports
 EXPOSE 80
 
-# Start Supervisord
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"]
