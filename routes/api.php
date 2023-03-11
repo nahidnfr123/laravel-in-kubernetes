@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UtilityController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -27,3 +28,4 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::put('/user', [UserController::class, 'update']);
     Route::post('/logout', [AuthenticationController::class, 'logout']);
 });
+Route::post('aws-url', [UtilityController::class, 'getAwsUrl']);
