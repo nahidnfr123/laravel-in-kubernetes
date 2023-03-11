@@ -6,6 +6,7 @@ use App\Models\User;
 
 class UserObserver
 {
+    public string $cacheKey = 'users';
     /**
      * Handle the User "created" event.
      */
@@ -16,8 +17,7 @@ class UserObserver
 
     public function saving(User $user): void
     {
-        $cacheKey = 'users';
-        cache()->forget($cacheKey);
+        cache()->forget($this->cacheKey);
     }
 
     /**
@@ -33,7 +33,7 @@ class UserObserver
      */
     public function deleted(User $user): void
     {
-        //
+        cache()->forget($this->cacheKey);
     }
 
     /**
