@@ -1,7 +1,6 @@
 version: '3.8'
 
 services:
-
     nginx:
         image: nginx:alpine
         container_name: nginx
@@ -12,18 +11,6 @@ services:
             - ./nginx/conf.d/:/etc/nginx/conf.d/
         depends_on:
             - app
-            - db
-
-    db:
-      image : mysql
-      container_name : mysql
-      volumes:
-        - ./mysql/data:/var/lib/mysql
-      ports:
-        - "3306:3306"
-      environment:
-        MYSQL_DATABASE: blog
-        MYSQL_ROOT_PASSWORD: password
 
     app:
         container_name: backend
@@ -31,7 +18,7 @@ services:
             context: .
             dockerfile: Dockerfile
         volumes:
-            - ./src:/var/www
+            - .:/var/www
         ports:
             - "9000:9000"
         working_dir: /var/www

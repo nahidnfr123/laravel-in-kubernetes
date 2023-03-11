@@ -1,48 +1,40 @@
 FROM php:8.1-fpm
 
-RUN docker-php-ext-install pdo pdo_mysql
-
-
-RUN apt-get update
-
-# Install useful tools
-RUN apt-get -y install apt-utils nano wget dialog vim
-
-# Install important libraries
-RUN apt-get -y install --fix-missing \
-    apt-utils \
-    build-essential \
+# Install necessary packages
+RUN apt-get update && apt-get install -y \
     git \
+    nginx \
     curl \
-    libcurl4 \
-    libcurl4-openssl-dev \
-    zlib1g-dev \
+    libpng-dev \
     libzip-dev \
     zip \
-    libbz2-dev \
-    locales \
-    libmcrypt-dev \
-    libicu-dev \
-    libonig-dev \
-    libxml2-dev
+    unzip \
+    && rm -rf /var/cache/apk/*
 
-RUN docker-php-ext-install \
-    exif \
-    pcntl \
-    bcmath \
-    ctype \
-    curl \
-    iconv \
-    xml \
-    soap \
-    pcntl \
-    mbstring \
-    tokenizer \
-    bz2 \
-    zip \
-    intl
+# Install PHP extensions
+RUN docker-php-ext-install pdo pdo_mysql gd zip
 
-# Install Postgre PDO
-RUN apt-get install -y libpq-dev \
-    && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
-    && docker-php-ext-install pdo pdo_pgsql pgsql
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
+
+# Set working directory
+WORKDIR /var/www/html
+
+# Copy source files
+COPY . /var/www/html
+
+# Install Composer dependencies
+RUN composer install --no-dev --optimize-autoloader
+
+# Copy Nginx configuration file
+COPY docker/nginx.conf /etc/nginx/nginx.conf
+
+# Set permissions
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html/storage
+
+# Expose ports
+EXPOSE 9000
+
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"]
