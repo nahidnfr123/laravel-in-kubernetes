@@ -34,7 +34,7 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/storage
 
 # Expose ports
-EXPOSE 80
+EXPOSE 9000
 
 # Start Nginx
 CMD ["nginx", "-g", "daemon off;"]
