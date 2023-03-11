@@ -24,8 +24,11 @@ class UserController extends Controller
      */
     public function index(): JsonResponse
     {
-        $users = User::all();
-        return (UserResource::collection($users))->response();
+        $data = cache()->remember('users', 3600, function () {
+            return User::all(['name', 'email', 'phone', 'created_at']);
+        });
+
+        return (UserResource::collection($data))->response();
     }
 
 

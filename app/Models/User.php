@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Observers\UserObserver;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -46,8 +47,18 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    protected static function booted()
+    {
+        parent::observe(UserObserver::class);
+    }
+
     public function getAvatarAttribute($photo): ?string
     {
         return $photo ? Storage::url($photo) : null;
+    }
+
+    public function getCreatedAtAttribute($create_at): ?string
+    {
+        return Carbon::parse($create_at)->diffForHumans();
     }
 }
