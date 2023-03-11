@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
@@ -63,9 +64,11 @@ class UserController extends Controller
                     ]);
                 }
             }
-            $avatar = $this->uploadPhoto($request, 'avatar');
-            if ($avatar) {
-                $user->avatar = $avatar;
+            if ($request->has('avatar')) {
+                $avatar = $this->moveFile($request->avatar, 'avatar');
+                if ($avatar) {
+                    $user->avatar = $avatar;
+                }
             }
             $user->name = $data['name'];
             $user->email = $data['email'];
@@ -111,4 +114,6 @@ class UserController extends Controller
             ? response()->json(['status' => __($status)])
             : response()->json(['email' => __($status)]);
     }
+
+
 }
