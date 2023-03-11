@@ -2,6 +2,7 @@ FROM php:8.1-fpm
 
 # Install necessary packages
 RUN apt update && apt install -y \
+    git \
     nginx \
     curl \
     libpng-dev \
