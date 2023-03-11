@@ -16,7 +16,7 @@ class UtilityController extends Controller
         $this->validate($request, $rules);
 
         $sdk = new Sdk([
-            'region' => config('filesystems.disks.s3.region'),
+            'region' => config('filesystems.disks.s3.region', null),
             'version' => 'latest'
         ]);
         $client = $sdk->createS3();
